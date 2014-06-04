@@ -1,0 +1,29 @@
+server:
+ - 'clean:server'
+ - 'concurrent:server'
+ - 'autoprefixer'
+ - 'connect:livereload'
+ - 'watch'
+
+test:
+ - 'clean:server'
+ - 'concurrent:test'
+ - 'autoprefixer'
+ - 'mocha'
+
+build:
+ - 'clean:dist'
+ - 'useminPrepare'
+ - 'concurrent:dist'
+ - 'autoprefixer'
+ - 'concat'
+ - 'cssmin'
+ - 'uglify'
+ - 'copy:dist'
+ - 'rev'
+ - 'usemin'
+
+default:
+ - 'jshint'
+ - 'test'
+ - 'build'
