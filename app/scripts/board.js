@@ -123,7 +123,7 @@ function Board(rmax, cmax, $el) {
 
 			for (c = 0; c < this.cmax; c++) {
 				world[r][c] = 0;
-				this[Math.floor(Math.random()*2) ? 'birth' : 'death'](r, c);
+				this[Math.floor(Math.random()*5) > 3 ? 'birth' : 'death'](r, c);
 			}
 		}
 
@@ -142,9 +142,9 @@ function Board(rmax, cmax, $el) {
 		this.$stats.append(tpl.apply({
 			number: this.generation,
 			alive: this.alive,
-			aliveDiff: this.aliveOld - this.alive,
+			aliveDiff: this.alive - this.aliveOld,
 			dead: this.dead,
-			deadDiff: this.deadOld - this.dead
+			deadDiff: this.dead - this.deadOld
 		}));
 	};
 
