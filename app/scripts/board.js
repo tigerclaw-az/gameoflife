@@ -6,15 +6,16 @@ function Board(rmax, cmax, $el) {
 		$tr,
 
 		livingNeighbors = function(r, c) {
-			return self.world[r-1][c-1] +
-				self.world[r-1][c]   +
-				self.world[r-1][c+1] +
-				self.world[r][c-1]   +
-				self.world[r][c+1]   +
-				self.world[r+1][c-1] +
-				self.world[r+1][c]   +
-				self.world[r+1][c+1];
-		};
+			return world[r-1][c-1] +
+				world[r-1][c]   +
+				world[r-1][c+1] +
+				world[r][c-1]   +
+				world[r][c+1]   +
+				world[r+1][c-1] +
+				world[r+1][c]   +
+				world[r+1][c+1];
+		},
+		world = [];
 
 	this.$element = $el;
 	this.$grid = $('<table/>', {class: 'grid'});
@@ -22,16 +23,17 @@ function Board(rmax, cmax, $el) {
 	this.rmax = rmax;
 	this.cmax = cmax;
 	this.alive = 0;
+	this.aliveOld = 0;
 	this.dead = this.rmax * this.cmax;
+	this.deadOld = 0;
 	this.generation = 0;
-	this.world = [];
 
 	for (r = 0; r < this.rmax; r++) {
-		this.world[r] = [];
+		world[r] = [];
 		$tr = $('<tr/>', { height: height/self.rmax });
 
 		for (c = 0; c < this.cmax; c++) {
-			this.world[r][c] = 0;
+			world[r][c] = 0;
 			$tr.append($('<td/>', {
 				'class': 'dead',
 				width: width/this.cmax+'px'
@@ -54,39 +56,27 @@ function Board(rmax, cmax, $el) {
 	 * PUBLIC
 	 *********/
 	 this.birth = function(r, c) {
-		this.world[r][c] = 1;
-		this.alive++;
-		this.dead--;
+	 	if (world[r][c] !== 1) {
+	 		this.alive++;
+	 		this.dead--;
+	 	}
+
+		world[r][c] = 1;
 		$(this.$grid[0].rows[r].cells[c])
 			.removeClass('dead')
 			.addClass('alive');
 	};
 
 	this.death = function(r, c) {
-		this.world[r][c] = 0;
-		this.alive--;
-		this.dead++;
+		if (world[r][c] !== 0) {
+			this.alive--;
+			this.dead++;
+		}
+
+		world[r][c] = 0;
 		$(this.$grid[0].rows[r].cells[c])
 			.removeClass('alive')
 			.addClass('dead');
-	};
-
-	this.clear = function(r, c) {
-		this.$stats.empty();
-
-		this.alive = 0;
-		this.dead = this.rmax * this.cmax;
-		this.generation = 0;
-
-		for (r = 0; r < this.rmax; r++) {
-			this.world[r] = [];
-
-			for (c = 0; c < this.cmax; c++) {
-				this.death(r, c);
-			}
-		}
-
-		this.updateStats();
 	};
 
 	this.next = function() {
@@ -94,10 +84,14 @@ function Board(rmax, cmax, $el) {
 			neighbors = 0,
 			cell, i, j;
 
+		this.aliveOld = this.alive;
+		this.deadOld = this.dead;
+		this.generation++;
+
 		for (i = 1 ; i < nextGen.rmax-1 ; i++ ) {
 			for (j = 1 ; j < nextGen.cmax-1 ; j++ ) {
 				neighbors = livingNeighbors( i, j );
-				cell = nextGen.world[i][j];
+				cell = world[i][j];
 
 				if (cell && neighbors === 2 || neighbors === 3) {
 					nextGen.birth(i, j);
@@ -111,26 +105,48 @@ function Board(rmax, cmax, $el) {
 			}
 		}
 
-		this.generation++;
+		this.updateStats();
+	};
+
+	this.reset = function() {
+		this.$stats.empty();
+
+		this.generation = 0;
+		this.alive = 0;
+		this.aliveOld = this.alive;
+		this.dead = this.rmax * this.cmax;
+		this.deadOld = this.dead;
+
+
+		for (r = 0; r < this.rmax; r++) {
+			world[r] = [];
+
+			for (c = 0; c < this.cmax; c++) {
+				world[r][c] = 0;
+				this[Math.floor(Math.random()*2) ? 'birth' : 'death'](r, c);
+			}
+		}
 
 		this.updateStats();
-	 };
+	};
 
 	this.updateStats = function() {
-	 	var tpl = new Template(
-	 		'<tr>' +
-	 			'<td>{{number}}</td>' +
-	 			'<td>{{alive}} <span>({{aliveDiff}})</span></td>' +
-	 			'<td>{{dead}} <span>({{deadDiff}})</span></td>' +
-	 		'</tr>'
-	 	);
+		var tpl = new Template(
+				'<tr>' +
+					'<td>{{number}}</td>' +
+					'<td>{{alive}} <span>({{aliveDiff}})</span></td>' +
+					'<td>{{dead}} <span>({{deadDiff}})</span></td>' +
+				'</tr>'
+			);
 
-	 	this.$stats.append(tpl.apply({
-	 		number: this.generation,
-	 		alive: this.alive,
-	 		dead: this.dead
-	 	}));
-	 };
+		this.$stats.append(tpl.apply({
+			number: this.generation,
+			alive: this.alive,
+			aliveDiff: this.aliveOld - this.alive,
+			dead: this.dead,
+			deadDiff: this.deadOld - this.dead
+		}));
+	};
 
-	 this.updateStats();
+	this.updateStats();
 }
