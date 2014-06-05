@@ -17,7 +17,7 @@ module.exports = {
 	},
 	livereload: {
 		options: {
-			livereload: 35729
+			livereload: '<%= lrPort %>'
 		},
 		files: [
 			'<%= appPath %>/*.html',
