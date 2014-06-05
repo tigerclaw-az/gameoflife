@@ -15,7 +15,8 @@ module.exports = function (grunt) {
 	require('load-grunt-config')(grunt, {
 		data: {
 			appPath: '<%= package.appPath %>',
-			buildPath: '<%= package.distPath %>'
+			distPath: '<%= package.distPath %>',
+			lrPort: 35729
 		}
 	});
 };
