@@ -11,7 +11,6 @@ module.exports = function(grunt, config) {
 		},
 		livereload: {
 			options: {
-				keepalive: true,
 				middleware: function (connect) {
 					return [
 						lrSnippet,
