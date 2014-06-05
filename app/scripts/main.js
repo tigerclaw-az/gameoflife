@@ -1,4 +1,6 @@
 function newBoard(board) {
+	board.clear();
+
 	for (var i = 0; i < 345; ++i) {
 		board.birth(
 			Math.floor((Math.random()*44)+1),
@@ -13,7 +15,6 @@ function newBoard(board) {
 	var board = new Board(45, 45, $('#board'));
 
 	$('#new-board').click(function() {
-		board.clear();
 		board = newBoard(board);
 	});
 

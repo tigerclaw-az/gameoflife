@@ -3,7 +3,18 @@ function Board(rmax, cmax, $el) {
 		height = $el.height(),
 		width = $el.width(),
 		r, c,
-		$tr;
+		$tr,
+
+		livingNeighbors = function(r, c) {
+			return self.world[r-1][c-1] +
+				self.world[r-1][c]   +
+				self.world[r-1][c+1] +
+				self.world[r][c-1]   +
+				self.world[r][c+1]   +
+				self.world[r+1][c-1] +
+				self.world[r+1][c]   +
+				self.world[r+1][c+1];
+		};
 
 	this.$element = $el;
 	this.$grid = $('<table/>', {class: 'grid'});
@@ -11,19 +22,20 @@ function Board(rmax, cmax, $el) {
 	this.rmax = rmax;
 	this.cmax = cmax;
 	this.alive = 0;
-	this.dead = this.rmax*this.cmax;
+	this.dead = this.rmax * this.cmax;
 	this.generation = 0;
 	this.world = [];
 
 	for (r = 0; r < this.rmax; r++) {
 		this.world[r] = [];
-		$tr = $('<tr/>', {height: height/self.rmax});
+		$tr = $('<tr/>', { height: height/self.rmax });
 
 		for (c = 0; c < this.cmax; c++) {
 			this.world[r][c] = 0;
 			$tr.append($('<td/>', {
 				'class': 'dead',
-				width: width/this.cmax+'px'}));
+				width: width/this.cmax+'px'
+			}));
 		}
 
 		this.$grid.append($tr);
@@ -31,94 +43,94 @@ function Board(rmax, cmax, $el) {
 
 	$el.append(this.$grid);
 
-	this.updateStats();
-
 	$('td').on('click', function(event) {
 		var col = this.cellIndex,
 			row = $(this).parents()[0].rowIndex;
 
 		self.birth(row, col);
 	});
-}
 
-Board.prototype.next = function() {
-	var nextGen = this,
-		neighbors = 0,
-		cell, i, j;
+	/**********
+	 * PUBLIC
+	 *********/
+	 this.birth = function(r, c) {
+		this.world[r][c] = 1;
+		this.alive++;
+		this.dead--;
+		$(this.$grid[0].rows[r].cells[c])
+			.removeClass('dead')
+			.addClass('alive');
+	};
 
-	for (i = 1 ; i < nextGen.rmax-1 ; i++ ) {
-		for (j = 1 ; j < nextGen.cmax-1 ; j++ ) {
-			neighbors = this.livingNeighbors( i, j );
-			cell = nextGen.world[i][j];
+	this.death = function(r, c) {
+		this.world[r][c] = 0;
+		this.alive--;
+		this.dead++;
+		$(this.$grid[0].rows[r].cells[c])
+			.removeClass('alive')
+			.addClass('dead');
+	};
 
-			if (cell && neighbors === 2 || neighbors === 3) {
-				nextGen.birth(i, j);
-			} else if (cell && neighbors < 2 || neighbors > 3) {
-				nextGen.death(i, j);
-			} else if (!cell && neighbors === 3) {
-				nextGen.death(i, j);
+	this.clear = function(r, c) {
+		this.$stats.empty();
+
+		this.alive = 0;
+		this.dead = this.rmax * this.cmax;
+		this.generation = 0;
+
+		for (r = 0; r < this.rmax; r++) {
+			this.world[r] = [];
+
+			for (c = 0; c < this.cmax; c++) {
+				this.death(r, c);
 			}
-
-			neighbors = 0;
 		}
-	}
 
-	this.generation++;
+		this.updateStats();
+	};
 
-	this.updateStats();
-};
+	this.next = function() {
+		var nextGen = this,
+			neighbors = 0,
+			cell, i, j;
 
-Board.prototype.livingNeighbors = function(r, c) {
-	return this.world[r-1][c-1] +
-		this.world[r-1][c]   +
-		this.world[r-1][c+1] +
-		this.world[r][c-1]   +
-		this.world[r][c+1]   +
-		this.world[r+1][c-1] +
-		this.world[r+1][c]   +
-		this.world[r+1][c+1];
-};
+		for (i = 1 ; i < nextGen.rmax-1 ; i++ ) {
+			for (j = 1 ; j < nextGen.cmax-1 ; j++ ) {
+				neighbors = livingNeighbors( i, j );
+				cell = nextGen.world[i][j];
 
-Board.prototype.birth = function(r, c) {
-	this.world[r][c] = 1;
-	$(this.$grid[0].rows[r].cells[c]).removeClass('dead').addClass('alive');
-};
+				if (cell && neighbors === 2 || neighbors === 3) {
+					nextGen.birth(i, j);
+				} else if (cell && neighbors < 2 || neighbors > 3) {
+					nextGen.death(i, j);
+				} else if (!cell && neighbors === 3) {
+					nextGen.death(i, j);
+				}
 
-Board.prototype.death = function(r, c) {
-	this.world[r][c] = 0;
-	$(this.$grid[0].rows[r].cells[c]).removeClass('alive').addClass('dead');
-};
-
-Board.prototype.clear = function(r, c) {
-	this.$stats.empty();
-
-	this.alive = 0;
-	this.dead = 0;
-	this.generation = 0;
-
-	for (r = 0; r < this.rmax; r++) {
-		this.world[r] = [];
-
-		for (c = 0; c < this.cmax; c++) {
-			this.death(r, c);
+				neighbors = 0;
+			}
 		}
-	}
 
-	this.updateStats();
-};
+		this.generation++;
 
-Board.prototype.updateStats = function() {
-	var tpl = new Template(
-		'<tr>' +
-			'<td>{{number}}</td>' +
-			'<td>{{alive}} <span>({{aliveDiff}})</span></td>' +
-			'<td>{{dead}} <span>({{deadDiff}})</span></td>' +
-		'</tr>'
-	);
+		this.updateStats();
+	 };
 
-	this.$stats.append(tpl.apply({
-		number: this.generation,
-		alive: this.$grid.find('.alive').length,
-		dead: this.$grid.find('.dead').length
-	}));
-};
+	this.updateStats = function() {
+	 	var tpl = new Template(
+	 		'<tr>' +
+	 			'<td>{{number}}</td>' +
+	 			'<td>{{alive}} <span>({{aliveDiff}})</span></td>' +
+	 			'<td>{{dead}} <span>({{deadDiff}})</span></td>' +
+	 		'</tr>'
+	 	);
+
+	 	this.$stats.append(tpl.apply({
+	 		number: this.generation,
+	 		alive: this.alive,
+	 		dead: this.dead
+	 	}));
+	 };
+
+	 this.updateStats();
+}
