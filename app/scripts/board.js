@@ -2,8 +2,8 @@ function Board(rmax, cmax, $el) {
 	var self = this,
 		height = $el.height(),
 		width = $el.width(),
-		r, c, i,
-		$tr, $cell;
+		r, c,
+		$tr;
 
 	this.$element = $el;
 	this.$grid = $('<table/>', {class: 'grid'});
@@ -108,9 +108,17 @@ Board.prototype.clear = function(r, c) {
 };
 
 Board.prototype.updateStats = function() {
-	$.tmpl($('#stats-tmpl'), {
+	var tpl = new Template(
+		'<tr>' +
+			'<td>{{number}}</td>' +
+			'<td>{{alive}} <span>({{aliveDiff}})</span></td>' +
+			'<td>{{dead}} <span>({{deadDiff}})</span></td>' +
+		'</tr>'
+	);
+
+	this.$stats.append(tpl.apply({
 		number: this.generation,
 		alive: this.$grid.find('.alive').length,
 		dead: this.$grid.find('.dead').length
-	}).appendTo(this.$stats);
-}
+	}));
+};
