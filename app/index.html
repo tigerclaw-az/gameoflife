@@ -14,16 +14,6 @@
 		<!-- build:js scripts/vendor/modernizr.js -->
 		<script src="bower_components/modernizr/modernizr.js"></script>
 		<!-- endbuild -->
-
-		<!-- TEMPLATES -->
-		<script type="html/template" id="stats-tmpl">
-			<tr>
-				<td>${number}</td>
-				<td>${alive} <span>(${aliveDiff})</span></td>
-				<td>${dead} <span>(${deadDiff})</span></td>
-			</tr>
-		</script>
-		<!-- END TEMPLATES -->
 	</head>
 	<body>
 		<div id="container">
@@ -48,7 +38,8 @@
 
 		<!-- build:js scripts/main.js -->
 		<script src="bower_components/jquery/jquery.js"></script>
-		<script src="bower_components/jquery-tmpl/jquery.tmpl.min.js"></script>
+		<script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
+		<script src="scripts/template.js"></script>
 		<script src="scripts/board.js"></script>
 		<script src="scripts/main.js"></script>
 		<!-- endbuild -->
