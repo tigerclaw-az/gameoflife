@@ -1,0 +1,41 @@
+$iconSpritePath: "../images/glyphicons-halflings.png";
+$iconWhiteSpritePath: "../images/glyphicons-halflings-white.png";
+
+@import 'sass-bootstrap/lib/bootstrap';
+
+#container {
+	height: 600px;
+	width: 900px;
+}
+
+#board {
+	/*display: table;*/
+	float: left;
+	height: 600px;
+	width: 600px;
+}
+
+#stats {
+	float: left;
+}
+
+#btn-container {
+	position: absolute;
+}
+
+.grid {
+	border: 1px solid #ddd;
+	border-collapse: separate;
+
+	td {
+		border: 1px solid #ddd;
+	}
+}
+
+.alive {
+	background: #000;
+}
+
+.dead {
+	background: #FFF;
+}
