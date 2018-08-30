@@ -20,3 +20,16 @@ html {
 body {
   background-color: lightgrey;
 }
+
+.container-fluid {
+	height: 100%;
+	width: 100%;
+
+	.row {
+		height: 100%;
+	}
+
+	.col {
+		height: 100%;
+	}
+}

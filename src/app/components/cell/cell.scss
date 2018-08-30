@@ -1,0 +1,13 @@
+.cell {
+	border: 1px solid #ddd;
+	cursor: pointer;
+	user-select: none;
+
+	&.alive {
+		background-color: yellow;
+	}
+
+	&:not(.alive) {
+		background-color: #aaa;
+	}
+}

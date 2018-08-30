@@ -1,0 +1,13 @@
+.board {
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.9);
+	border: 1px solid black;
+	display: flex;
+	flex-flow: row;
+	flex-grow: 1;
+	flex-wrap: wrap;
+	justify-content: center;
+	height: 100%;
+	user-select: none;
+	width: 100%;
+}

@@ -2,7 +2,11 @@
 	align-items: center;
 	display: flex;
 	flex-flow: column;
-	justify-content: center;
 	height: 100%;
 	width: 100%;
+}
+
+board {
+	display: block;
+	height: 100%;
 }
