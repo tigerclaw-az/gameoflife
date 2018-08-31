@@ -1,3 +1,21 @@
 <div class="controls">
-	<button ng-click="$ctrl.toggleRunning()" class="btn-toggle-running">{{ !$ctrl.cs.isRunning ? 'Play' : 'Pause' }}</button>
+	<span
+		ng-class="{ 'glyphicon-pause': $ctrl.cs.isRunning, 'glyphicon-play': !$ctrl.cs.isRunning }"
+		ng-click="$ctrl.toggleRunning()"
+		class="icon glyphicon btn-toggle-running"
+	>
+		{{ !$ctrl.cs.isRunning ? 'Play' : 'Pause' }}
+	</span>
+	<div class="range-slider">
+		<span>{{$ctrl.minGridSize}}</span>
+		<span>{{$ctrl.cs.gridSize}}</span>
+		<span>{{$ctrl.maxGridSize}}</span>
+	</div>
+	<input
+		ng-model="$ctrl.cs.gridSize"
+		type="range"
+		min="{{::$ctrl.minGridSize}}"
+		max="{{::$ctrl.maxGridSize}}"
+		value="{{::$ctrl.cs.gridSize}}"
+		>
 </div>
