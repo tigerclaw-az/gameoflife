@@ -2,19 +2,18 @@ require('./board.scss');
 
 /** @ngInject */
 function Board($scope, $interval, $element, $log, _, controlsService) {
-  var halfGrid;
-
   this.$element = $element;
   this.$log = $log;
   this._ = _;
   this.cs = controlsService.data;
 
+  this.$board = this.$element[0];
+  this.boardRect = this.$board.getBoundingClientRect();
+
   this.gridSize = controlsService.getGridSize();
   this.cells = _.range(0, this.gridSize);
 
-  halfGrid = this.gridSize / 2;
-
-  this.cellSize = this.$element[0].clientHeight / halfGrid * this.$element[0].clientWidth / halfGrid * 5;
+  this.calculateCellSize();
 
   this.world = [];
 
@@ -25,9 +24,8 @@ function Board($scope, $interval, $element, $log, _, controlsService) {
     function () {
       return controlsService.data.isRunning;
     },
-    function (data) {
-      this.$log.debug('$watch', data);
-      if (data) {
+    function (isRunning) {
+      if (isRunning) {
         this.timer = $interval(function () {
           this.next();
         }.bind(this), 500);
@@ -39,6 +37,11 @@ function Board($scope, $interval, $element, $log, _, controlsService) {
 }
 
 Board.prototype = {
+  calculateCellSize() {
+    var area = this.boardRect.height * this.boardRect.width;
+    var squares = Math.sqrt(area / this.gridSize);
+    this.cellSize = squares;
+  },
   next: function () {
     this.generation++;
     this.$log.debug(this.generation);
