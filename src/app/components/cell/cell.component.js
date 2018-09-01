@@ -4,6 +4,9 @@ module.exports = {
   template: require('./cell.tpl.html'),
   controller: require('./cell.controller.js'),
   bindings: {
-    size: '='
+    size: '<',
+    index: '<',
+    isPopulated: '<',
+    onChange: '&'
   }
 };
