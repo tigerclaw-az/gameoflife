@@ -1,21 +1,32 @@
 <div class="controls">
-	<span
+	<a
 		ng-class="{ 'glyphicon-pause': $ctrl.cs.isRunning, 'glyphicon-play': !$ctrl.cs.isRunning }"
 		ng-click="$ctrl.toggleRunning()"
-		class="icon glyphicon btn-toggle-running"
+		class="icon glyphicon btn btn-default btn-lg btn-toggle-running"
+		role="button"
 	>
 		{{ !$ctrl.cs.isRunning ? 'Play' : 'Pause' }}
-	</span>
-	<div class="range-slider">
+	</a>
+	<div class="grid-size">
 		<span>{{$ctrl.minGridSize}}</span>
 		<span>{{$ctrl.cs.gridSize}}</span>
 		<span>{{$ctrl.maxGridSize}}</span>
-	</div>
-	<input
-		ng-model="$ctrl.cs.gridSize"
-		type="range"
-		min="{{::$ctrl.minGridSize}}"
-		max="{{::$ctrl.maxGridSize}}"
-		value="{{::$ctrl.cs.gridSize}}"
+		<input
+			ng-model="$ctrl.cs.gridSize"
+			class="range-slider"
+			type="range"
+			min="{{::$ctrl.minGridSize}}"
+			max="{{::$ctrl.maxGridSize}}"
+			step="{{::$ctrl.stepGridSize}}"
+			value="{{::$ctrl.cs.gridSize}}"
 		>
+	</div>
+	<div class="interval"></div>
+	<a
+		ng-click="$ctrl.reset()"
+		class="reset-board btn btn-default btn-lg btn-reset icon glyphicon glyphicon-refresh"
+		role="button"
+	>
+		Reset
+	</a>
 </div>

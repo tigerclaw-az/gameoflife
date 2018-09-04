@@ -1,7 +1,8 @@
 function ControlsService() {
   this.data = {
+    gridSize: 500,
     isRunning: false,
-    gridSize: 500
+    interval: 500
   };
 }
 
@@ -11,6 +12,11 @@ ControlsService.prototype = {
   },
   getIsRunning: function () {
     return this.data.isRunning;
+  },
+  reset: function () {
+    this.data.gridSize = 500;
+    this.data.isRunning = false;
+    this.data.interval = 500;
   },
   setGridSize: function (value) {
     this.data.gridSize = value;

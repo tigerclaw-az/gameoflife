@@ -10,13 +10,24 @@ function Board($scope, $interval, $element, $log, _, controlsService) {
   this.$board = this.$element[0];
   this.boardRect = this.$board.getBoundingClientRect();
 
-  this.gridSize = controlsService.getGridSize();
-  this.world = _.range(0, this.gridSize);
-
-  this.calculateCellSize();
-
   // TODO: Move to stats.controller.js
   this.generation = 0;
+
+  $scope.$on('reset', function() {
+    this.reset();
+  }.bind(this));
+
+  $scope.$watch(
+    function () {
+      return controlsService.data.gridSize;
+    },
+    function (size) {
+      this.gridSize = size;
+      this.world = this._.fill(Array(size), false);
+
+      this.calculateCellSize();
+    }.bind(this)
+  );
 
   $scope.$watch(
     function () {
@@ -26,6 +37,8 @@ function Board($scope, $interval, $element, $log, _, controlsService) {
       if (isRunning) {
         this.timer = $interval(function () {
           this.world.forEach(function (w, index) {
+            var neighbors = this.getLivingNeighborsCount(index);
+
             /**
              * For a space that is 'populated':
                 Each cell with one or no neighbors dies, as if by solitude.
@@ -34,7 +47,6 @@ function Board($scope, $interval, $element, $log, _, controlsService) {
               For a space that is 'empty' or 'unpopulated':
                 Each cell with three neighbors becomes populated.
              */
-            var neighbors = this.getLivingNeighborsCount(index);
             if (w) {
               if (neighbors < 2 || neighbors >= 4) {
                 this.world[index] = false;
@@ -44,7 +56,7 @@ function Board($scope, $interval, $element, $log, _, controlsService) {
             }
           }.bind(this));
           this.next();
-        }.bind(this), 500);
+        }.bind(this), this.cs.interval);
       } else {
         $interval.cancel(this.timer);
       }
@@ -79,6 +91,7 @@ Board.prototype = {
   },
   reset: function () {
     this.generation = 0;
+    this.world = this._.fill(Array(this.gridSize), false);
   },
   updateCell: function (index, isAlive) {
     this.world[index] = isAlive;

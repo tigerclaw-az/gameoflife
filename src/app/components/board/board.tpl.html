@@ -4,7 +4,7 @@
 		on-change="$ctrl.updateCell(index, isAlive)"
 		size="$ctrl.cellSize"
 		index="$index"
-		is-populated="$ctrl.world[$index]"
+		is-populated="$ctrl.world[$index] === true"
 	>
 	</cell>
 </div>

@@ -1,5 +1,6 @@
 /** @ngInject */
-function Controls($scope, $element, $log, controlsService) {
+function Controls($scope, $rootScope, $element, $log, controlsService) {
+  this.$rootScope = $rootScope;
   this.$element = $element;
   this.$log = $log;
   this.controlsService = controlsService;
@@ -13,8 +14,11 @@ function Controls($scope, $element, $log, controlsService) {
 }
 
 Controls.prototype = {
+  reset: function () {
+    this.controlsService.reset();
+    this.$rootScope.$emit('reset');
+  },
   setGridSize: function (evt) {
-    this.$log.debug(evt);
     this.controlsService.setGridSize(evt.target.value);
   },
   toggleRunning: function () {
