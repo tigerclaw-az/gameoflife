@@ -6,6 +6,7 @@ module.exports = {
   bindings: {
     size: '<',
     index: '<',
+    isMousedown: '<',
     isPopulated: '<',
     onChange: '&'
   }

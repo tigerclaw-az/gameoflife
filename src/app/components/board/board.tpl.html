@@ -1,10 +1,11 @@
-<div class="board">
+<div class="board" ng-mousedown="$ctrl.isMousedown = true" ng-mouseup="$ctrl.isMousedown = false">
 	<cell
 		ng-repeat="n in $ctrl.world.slice(0, $ctrl.gridSize) track by $index"
 		on-change="$ctrl.updateCell(index, isAlive)"
 		size="$ctrl.cellSize"
 		index="$index"
 		is-populated="$ctrl.world[$index] === true"
+		is-mousedown="$ctrl.isMousedown"
 	>
 	</cell>
 </div>

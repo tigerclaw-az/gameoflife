@@ -16,12 +16,17 @@ function Cell($scope, $log) {
 }
 
 Cell.prototype = {
-  $onInit: function () {
+  $onInit: function() {
     this.onChange({index: this.index, isAlive: this.isAlive});
   },
-  onClick: function () {
+  onClick: function() {
     this.isAlive = !this.isAlive;
     this.onChange({index: this.index, isAlive: this.isAlive});
+  },
+  onMouseover: function() {
+    if (this.isMousedown) {
+      this.onClick();
+    }
   }
 };
 
